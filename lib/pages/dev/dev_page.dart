@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:grupaso_pedidos/pages/dev/example_page.dart';
 
+// recuerda recargar ----->
 var pages = [
   ExamplePage(),
 ];
