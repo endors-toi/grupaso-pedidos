@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "34189592117",
+    "project_id": "grupaso-pedidos",
+    "storage_bucket": "grupaso-pedidos.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:34189592117:android:4d2ad5810b4aa0ada9d37c",
+        "android_client_info": {
+          "package_name": "com.grupasocorp.pedidos"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDtzzDF_tcT1l3shDNJ8CzjjJ2pNRXTcA8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
