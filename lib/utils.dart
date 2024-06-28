@@ -3,6 +3,8 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:convert';
 
+//MARK: Popups
+
 /// Muestra un popup de error.
 ///
 /// [error] es el mensaje de error a mostrar.
@@ -66,6 +68,8 @@ void loadingStop() {
   EasyLoading.dismiss();
 }
 
+//MARK: JSON
+
 /// Convierte un objeto a formato JSON.
 ///
 /// [data] es el objeto a convertir.
@@ -99,14 +103,7 @@ dynamic parse(String data) {
   return jsonDecode(data);
 }
 
-/// Convierte un objeto DateTime a Timestamp para usar en Firestore.
-///
-/// [date] es el objeto DateTime a convertir.
-///
-/// Retorna un Timestamp.
-Timestamp getTimestamp(DateTime date) {
-  return Timestamp.fromDate(date);
-}
+//MARK: Navigate
 
 /// Navega al widget (página) especificado.
 ///
@@ -131,4 +128,15 @@ Future<T?> navigate<T>(BuildContext context, Widget page) {
     context,
     MaterialPageRoute(builder: (context) => page),
   );
+}
+
+//MARK: Otros
+
+/// Convierte un objeto DateTime a Timestamp para usar en Firestore.
+///
+/// [date] es el objeto DateTime a convertir.
+///
+/// Retorna un Timestamp.
+Timestamp getTimestamp(DateTime date) {
+  return Timestamp.fromDate(date);
 }
