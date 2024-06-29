@@ -22,57 +22,61 @@ class _ExamplePageState extends State<ExamplePage> {
         appBar: AppBar(
           title: Text('grupaso incorporated'),
         ),
-        body: Center(
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ElevatedButton(
-                  onPressed: () => easyInfo(randomTip()),
-                  child: Text('showInfo'),
-                ),
-                ElevatedButton(
-                  onPressed: () => easyError("*extremely loud buzzer*"),
-                  child: Text('showError'),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Checkbox(
-                      value: _conTexto,
-                      onChanged: (value) => setState(() {
-                        _conTexto = value!;
-                      }),
-                    ),
-                    Text('Con texto'),
-                  ],
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    if (_conTexto) {
-                      easySuccess("WENA :3");
-                    } else {
-                      easySuccess();
-                    }
-                  },
-                  child: Text('showSuccess'),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    if (_conTexto) {
-                      loadingStart("Cargando...");
-                    } else {
-                      loadingStart();
-                    }
-
-                    Future.delayed(Duration(seconds: 3), () {
-                      loadingStop();
-                    });
-                  },
-                  child: Text('showLoading'),
-                ),
-              ],
-            ),
+        body: SingleChildScrollView(
+          padding: EdgeInsets.only(top: 150),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                onPressed: () => easyInfo(randomTip(), duration: 5),
+                child: Text('easyInfo'),
+              ),
+              ElevatedButton(
+                onPressed: () => easyError("*extremely loud buzzer*"),
+                child: Text('easyError'),
+              ),
+              SizedBox(
+                height: 150,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Checkbox(
+                    value: _conTexto,
+                    onChanged: (value) => setState(() {
+                      _conTexto = value!;
+                    }),
+                  ),
+                  Text('Con texto'),
+                ],
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  if (_conTexto) {
+                    easySuccess("WENA :3");
+                  } else {
+                    easySuccess();
+                  }
+                },
+                child: Text('easySuccess'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  if (_conTexto) {
+                    loadingStart("Cargando...");
+                  } else {
+                    loadingStart();
+                  }
+                },
+                child: Text('startLoading'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  loadingStop();
+                },
+                child: Text('stopLoading'),
+              ),
+            ],
           ),
         ),
         floatingActionButton: FloatingActionButton(
@@ -101,17 +105,26 @@ String randomTip() {
     "Construye tu layout con Column y Row.",
     "Expanded le dice a un widget que use todo el espacio disponible.",
     "Expanded debe estar dentro de un Column o Row.",
+    "Puedes utilizar varios Expanded dentro de un Column o Row.",
+    "Container es muy versátil y puede contener otros widgets, darles un espacio definido, márgenes, padding, color de fondo, sombras, etc.",
     "StatefulWidget es mutable.",
     "StatelessWidget es inmutable.",
+    "PageView permite navegar entre widgets deslizando izquierda/derecha.",
     "Flutter tiene su propio motor de renderizado.",
+    "Usa setState((){}) para actualizar el estado de un StatefulWidget.",
     "Puedes crear layouts responsivos con MediaQuery.",
+    "Usa SingleChildScrollView para habilitar scroll en alguna dirección.",
+    "Scaffold cuenta con AppBar, Drawer, BottomNavigationBar y FloatingActionButton.",
     "Edita ThemeData para aplicar estilos a toda la app.",
     "Flutter Inspector ayuda a visualizar y explorar árboles de widgets.",
     "pubspec.yaml configura dependencias.",
     "Usa keys para gestionar widgets con estados dinámicos.",
     "Los botones más comunes son ElevatedButton FilledButton y TextButton.",
     "Navigator gestiona rutas en tu app.",
-    "ListView.builder() para la creación de listas dinámicas.",
+    "ListView.builder() permite crear listas dinámicas desde un iterable (como arrays).",
+    "ListTile es muy útil para listas verticales.",
+    "GridView.builder() permite crear grids con facilidad, ideal para menús o vistas de imágenes.",
+    "GridTile es preferible para rellenar un GridView, pero también es común utilizar imágenes, iconos o contenedores.",
     "Haz cualquier cosa 'clickeable' con InkWell.",
     "Flutter ofrece librerías ricas en animaciones.",
     "Obtén todo lo que necesitas desde pub.dev",
@@ -120,7 +133,9 @@ String randomTip() {
     "Los Streams permiten la programación por eventos.",
     "CustomPaint puede dibujar diseños personalizados.",
     "Usa BoxDecoration para sombras, bordes y formas.",
-    "Hero ofrece transiciones animadas entre widgets.",
+    "Hero anima la transición de una imagen o elemento de una pantalla a otra",
+    "ClipRRect recorta widgets con bordes redondeados.",
+    "Hay 3 librerías de iconos disponibles: MdiIcons, FeatherIcons y FontAwesomeIcons.",
   ];
   return x[Random().nextInt(x.length)];
 }
@@ -274,6 +289,120 @@ class _ChatState extends State<Chat> {
       ),
     );
   }
+
+  // MARK: Dialog: Avatar
+  Future<dynamic> _showAvatarDialog(BuildContext context) async {
+    final imageNames = await _loadAvatarImageNames();
+    easyInfo(stringify(imageNames));
+    String? selectedImage;
+
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(builder: (context, setState) {
+          return AlertDialog(
+            title: Text('Selecciona un avatar'),
+            content: Container(
+              width: double.maxFinite,
+              child: GridView.builder(
+                shrinkWrap: true,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 3,
+                  crossAxisSpacing: 4.0,
+                  mainAxisSpacing: 4.0,
+                ),
+                itemCount: imageNames.length,
+                itemBuilder: (context, index) {
+                  final imageName = imageNames[index];
+                  print(imageName);
+                  return GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        selectedImage = imageName;
+                      });
+                    },
+                    child: Stack(children: [
+                      Image.asset('assets/images/avatars/$imageName.jpg'),
+                      if (imageName == selectedImage)
+                        Container(
+                          color: Colors.black.withOpacity(0.5),
+                          child: Icon(
+                            FeatherIcons.check,
+                            color: Colors.white,
+                          ),
+                        ),
+                    ]),
+                  );
+                },
+              ),
+            ),
+            actions: [
+              TextButton(
+                child: Text('Nah'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              TextButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop(selectedImage);
+                },
+              ),
+            ],
+          );
+        });
+      },
+    );
+
+    return selectedImage;
+  }
+
+  Future<List<String>> _loadAvatarImageNames() async {
+    final manifestContent = await rootBundle.loadString('AssetManifest.json');
+    final Map<String, dynamic> manifestMap = parse(manifestContent);
+    final imagePaths = manifestMap.keys
+        .where((String key) =>
+            key.startsWith('assets/images/avatars') && key.endsWith('.jpg'))
+        .toList();
+    return imagePaths
+        .map((path) => path.split('/').last.replaceAll('.jpg', ''))
+        .toList();
+  }
+
+// MARK: Dialog: Username
+  Future<dynamic> _showUsernameDialog(BuildContext context) async {
+    TextEditingController _usernameController = TextEditingController();
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Ingresa username'),
+          content: TextField(
+            controller: _usernameController,
+            decoration: InputDecoration(),
+          ),
+          actions: [
+            TextButton(
+              child: Text('Nah'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+
+    var user = _usernameController.text.trim();
+    return user != "" ? user : false;
+  }
 }
 
 class FramedAvatar extends StatelessWidget {
@@ -307,105 +436,4 @@ class FramedAvatar extends StatelessWidget {
       ],
     );
   }
-}
-
-// MARK: Dialog: Username
-Future<dynamic> _showUsernameDialog(BuildContext context) async {
-  TextEditingController _usernameController = TextEditingController();
-  await showDialog(
-    context: context,
-    builder: (context) {
-      return AlertDialog(
-        title: Text('Ingresa username'),
-        content: TextField(
-          controller: _usernameController,
-          decoration: InputDecoration(),
-        ),
-        actions: [
-          TextButton(
-            child: Text('Nah'),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-          TextButton(
-            child: Text('OK'),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      );
-    },
-  );
-
-  var user = _usernameController.text.trim();
-  return user != "" ? user : false;
-}
-
-// MARK: Dialog: Avatar
-Future<dynamic> _showAvatarDialog(BuildContext context) async {
-  final imageNames = await _loadAvatarImageNames();
-  easyInfo(stringify(imageNames));
-  String? selectedImage;
-
-  await showDialog(
-    context: context,
-    builder: (context) {
-      return AlertDialog(
-        title: Text('Selecciona un avatar'),
-        content: Container(
-          width: double.maxFinite,
-          child: GridView.builder(
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3,
-              crossAxisSpacing: 4.0,
-              mainAxisSpacing: 4.0,
-            ),
-            itemCount: imageNames.length,
-            itemBuilder: (context, index) {
-              final imageName = imageNames[index];
-              print(imageName);
-              return GestureDetector(
-                onTap: () {
-                  selectedImage = imageName;
-                },
-                child: GridTile(
-                  child: Image.asset('assets/images/avatars/$imageName.jpg'),
-                ),
-              );
-            },
-          ),
-        ),
-        actions: [
-          TextButton(
-            child: Text('Nah'),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-          TextButton(
-            child: Text('OK'),
-            onPressed: () {
-              Navigator.of(context).pop(selectedImage);
-            },
-          ),
-        ],
-      );
-    },
-  );
-
-  return selectedImage;
-}
-
-Future<List<String>> _loadAvatarImageNames() async {
-  final manifestContent = await rootBundle.loadString('AssetManifest.json');
-  final Map<String, dynamic> manifestMap = parse(manifestContent);
-  final imagePaths = manifestMap.keys
-      .where((String key) =>
-          key.startsWith('assets/images/avatars') && key.endsWith('.jpg'))
-      .toList();
-  return imagePaths
-      .map((path) => path.split('/').last.replaceAll('.jpg', ''))
-      .toList();
 }
