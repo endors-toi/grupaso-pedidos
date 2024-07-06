@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:grupaso_pedidos/pages/crearPedido_page.dart';
 import 'package:grupaso_pedidos/pages/dev/example_page.dart';
 import 'package:grupaso_pedidos/pages/login.dart';
+import 'package:grupaso_pedidos/pages/caja_page.dart';
 
 // recuerda recargar ----->
 var pages = [
   ExamplePage(),
   CrearPedidoPage(),
   LoginPage(),
+  CajaPage(),
 ];
 
 class DevPage extends StatelessWidget {
