@@ -43,7 +43,7 @@ class _AdministradorPageState extends State<AdministradorPage> {
                               builder: (context) => PlaceHolderPedidos()),
                         );
                       },
-                      child: Text("Historial Pedidos",
+                      child: Text("Historial de Pedidos",
                           style: TextStyle(
                             fontSize: 20,
                           )),
