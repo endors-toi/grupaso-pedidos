@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:grupaso_pedidos/pages/cocina_page.dart';
 import 'package:grupaso_pedidos/pages/dev/example_page.dart';
 
 // recuerda recargar ----->
-var pages = [
-  ExamplePage(),
-];
+var pages = [ExamplePage(), CocinaPage()];
 
 class DevPage extends StatelessWidget {
   const DevPage({super.key});
