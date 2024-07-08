@@ -62,6 +62,7 @@ class _CrearPedidoPageState extends State<CrearPedidoPage> {
     });
   }
 
+
   // Lógica para guardar el pedido en la base de datos o donde sea que deba ir
   void confirmarPedido() {
     final valorTotal = productosSeleccionados.fold(0, (sum, item) => sum + item.precio);
@@ -75,10 +76,6 @@ class _CrearPedidoPageState extends State<CrearPedidoPage> {
       valor: valorTotal,
     );
 
-    //
-    //aqui debiera ir todo el tema de q se vea lo q llevas en el pedido actual abajo en la pantalla (si es q lo termino implementando)
-    //
-
     setState(() {
       productosSeleccionados.clear();
     });
@@ -89,6 +86,37 @@ class _CrearPedidoPageState extends State<CrearPedidoPage> {
     );
   }
 
+  // Mostrar diálogo de confirmación antes de confirmar el pedido
+  Future<void> mensajeConfirmarPedido() async {
+    final result = await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Confirmar Pedido'),
+        content: Text('¿Estás seguro de que deseas confirmar este pedido?'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(false);
+            },
+            child: Text('No'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(true);
+            },
+            child: Text('Sí'),
+          ),
+        ],
+      ),
+    );
+    
+    if (result == true) {
+      confirmarPedido();
+    }
+  }
+
+  // Método para calcular el valor total - quiza no deba ser redundante, pero bueno, tarea del maxi del futuro
+  int get valorTotal => productosSeleccionados.fold(0, (sum, item) => sum + item.precio);
 
   //CANCELAR PEDIDO AL VOLVER
   Future<bool> cancelarPedido() async {
@@ -135,6 +163,8 @@ class _CrearPedidoPageState extends State<CrearPedidoPage> {
         ),
         body: Column(
           children: [
+
+            //lista productos
             Expanded(
               child: ListView.builder(
                 itemCount: productos.length,
@@ -153,10 +183,37 @@ class _CrearPedidoPageState extends State<CrearPedidoPage> {
                 },
               ),
             ),
+
+
+            //container con productos seleccionados
+            if (productosSeleccionados.isNotEmpty)
+              Container(
+                padding: const EdgeInsets.all(16.0),
+                decoration: BoxDecoration(
+                  border: Border(top: BorderSide(color: Colors.grey)),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Productos Seleccionados:',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    ...productosSeleccionados.map((producto) => Text('${producto.nombre} - \$${producto.precio} ')),
+                    SizedBox(height: 8.0),
+                    Text(
+                      'Valor Total: \$$valorTotal ',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ),
+
+            //boton confirmar pedido
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: ElevatedButton(
-                onPressed: productosSeleccionados.isEmpty ? null : confirmarPedido,
+                onPressed: productosSeleccionados.isEmpty ? null : mensajeConfirmarPedido,
                 child: Text('Confirmar Pedido'),
               ),
             ),
