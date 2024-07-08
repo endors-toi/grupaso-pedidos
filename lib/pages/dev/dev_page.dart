@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:grupaso_pedidos/pages/cocina_page.dart';
 import 'package:grupaso_pedidos/pages/crearPedido_page.dart';
 import 'package:grupaso_pedidos/pages/dev/example_page.dart';
 import 'package:grupaso_pedidos/pages/login.dart';
@@ -10,6 +11,7 @@ var pages = [
   CrearPedidoPage(),
   LoginPage(),
   CajaPage(),
+  CocinaPage()
 ];
 
 class DevPage extends StatelessWidget {
