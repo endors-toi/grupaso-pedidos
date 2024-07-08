@@ -42,14 +42,14 @@ class CocinaPageState extends State<CocinaPage> {
                       trailing: ElevatedButton(
                         child: Text('Preparado'),
                         onPressed: () {
-                          // int id = doc['id'];
-                          // String docId = id.toString();
-                          // documentUpdate(
-                          //     collection: 'pedidos',
-                          //     docId: docId,
-                          //     document: {
-                          //       'estado': 'PREPARADO',
-                          //     });
+                          int id = doc['id'];
+                          String docId = id.toString();
+                          documentUpdate(
+                              collection: 'pedidos',
+                              docId: docId,
+                              document: {
+                                'estado': 'PREPARADO',
+                              });
                         },
                       ),
                     ),
