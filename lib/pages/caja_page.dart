@@ -150,7 +150,8 @@ class _CajaPageState extends State<CajaPage> {
                           child: Center(
                             child: Container(
                               decoration: BoxDecoration(
-                                color: Color.fromARGB(255, 111, 120, 253), // Color celeste
+                                color: Color.fromARGB(
+                                    255, 111, 120, 253), // Color celeste
                                 borderRadius: BorderRadius.circular(8.0),
                               ),
                               child: IconButton(
