@@ -71,11 +71,30 @@ class _CrearPedidoPageState extends State<CrearPedidoPage> {
   List<Producto> productos = [];
   List<Producto> productosSeleccionados = [];
   int currentIdPedido = 1;
+  final FirebaseFirestore _db = FirebaseFirestore.instance;
 
   @override
   void initState() {
     super.initState();
+    fetchProductos();
+    getMaxPedidoId();
     _loadProductos();
+  }
+
+  Future<void> fetchProductos() async {
+    QuerySnapshot snapshot = await _db.collection('productos').get();
+    setState(() {
+      productos = snapshot.docs.map((doc) => Producto.fromFirestore(doc)).toList();
+    });
+  }
+
+  Future<void> getMaxPedidoId() async {
+    QuerySnapshot snapshot = await _db.collection('pedidos').orderBy('id', descending: true).limit(1).get();
+    if (snapshot.docs.isNotEmpty) {
+      setState(() {
+        currentIdPedido = snapshot.docs.first['id'] + 1;
+      });
+    }
   }
 
   void _loadProductos() async {
