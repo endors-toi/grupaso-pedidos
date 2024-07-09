@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 //  EL FRONT ESTA HASTA ABAJO - DEJE LO RELACIONADO A BACKEND AL PRINCIPIO
 //     -ahora aparecen iconos pero seran imagenes, uso iconos mientras para no estar agregando assets aun al programa
@@ -12,14 +13,24 @@ class Producto {
   final String descripcion;
   final int precio;
 
-  Producto(
-      {required this.id,
-      required this.nombre,
-      required this.descripcion,
-      required this.precio});
+  Producto({
+    required this.id,
+    required this.nombre,
+    required this.descripcion,
+    required this.precio,
+  });
+
+  factory Producto.fromFirestore(DocumentSnapshot doc) {
+    Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+    return Producto(
+      id: data['id'],
+      nombre: data['nombre'],
+      descripcion: data['descripcion'],
+      precio: data['precio'],
+    );
+  }
 }
 
-// Modelo de Pedido
 class Pedido {
   final int id;
   final List<Producto> productos;
@@ -36,9 +47,19 @@ class Pedido {
     required this.estado,
     required this.valor,
   });
+
+  Map<String, dynamic> toFirestore() {
+    return {
+      'id': id,
+      'productos': productos.map((p) => p.id).toList(),
+      'mesa': mesa,
+      'timestamp': fecha,
+      'estado': estado,
+      'total': valor,
+    };
+  }
 }
 
-// Página de Crear Pedido
 class CrearPedidoPage extends StatefulWidget {
   const CrearPedidoPage({super.key});
 
@@ -47,26 +68,23 @@ class CrearPedidoPage extends StatefulWidget {
 }
 
 class _CrearPedidoPageState extends State<CrearPedidoPage> {
-  List<Producto> productos = [
-    Producto(
-        id: 1,
-        nombre: 'Producto 1',
-        descripcion: 'Descripción 1',
-        precio: 1000),
-    Producto(
-        id: 2,
-        nombre: 'Producto 2',
-        descripcion: 'Descripción 2',
-        precio: 1500),
-    Producto(
-        id: 3,
-        nombre: 'Producto 3',
-        descripcion: 'Descripción 3',
-        precio: 2000),
-  ];
-
+  List<Producto> productos = [];
   List<Producto> productosSeleccionados = [];
   int currentIdPedido = 1;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadProductos();
+  }
+
+  void _loadProductos() async {
+    FirebaseFirestore.instance.collection('productos').snapshots().listen((snapshot) {
+      setState(() {
+        productos = snapshot.docs.map((doc) => Producto.fromFirestore(doc)).toList();
+      });
+    });
+  }
 
   void toggleProductoSeleccionado(Producto producto) {
     setState(() {
@@ -80,11 +98,9 @@ class _CrearPedidoPageState extends State<CrearPedidoPage> {
 
   // Lógica para guardar el pedido en la base de datos o donde sea que deba ir
   void confirmarPedido() {
-    final valorTotal =
-        productosSeleccionados.fold(0, (sum, item) => sum + item.precio);
-
+    final valorTotal = productosSeleccionados.fold(0, (sum, item) => sum + item.precio);
     final nuevoPedido = Pedido(
-      id: currentIdPedido++,
+      id: currentIdPedido,
       productos: productosSeleccionados,
       mesa: 'Mesa 1',
       fecha: DateTime.now(),
@@ -92,14 +108,21 @@ class _CrearPedidoPageState extends State<CrearPedidoPage> {
       valor: valorTotal,
     );
 
-    setState(() {
-      productosSeleccionados.clear();
+    FirebaseFirestore.instance.collection('pedidos').add(nuevoPedido.toFirestore()).then((docRef) {
+      setState(() {
+        productosSeleccionados.clear();
+        currentIdPedido++;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Pedido confirmado! Valor total: $valorTotal \$')),
+      );
     });
 
-    //mensajito wapo
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Pedido confirmado! Valor total: $valorTotal \$')),
-    );
+
+    //volver a pantalla garzon
+    Navigator.of(context).pop(true);
+
   }
 
   // Mostrar diálogo de confirmación antes de confirmar el pedido
@@ -131,11 +154,6 @@ class _CrearPedidoPageState extends State<CrearPedidoPage> {
     }
   }
 
-  // Método para calcular el valor total - quiza no deba ser redundante, pero bueno, tarea del maxi del futuro
-  int get valorTotal =>
-      productosSeleccionados.fold(0, (sum, item) => sum + item.precio);
-
-  //CANCELAR PEDIDO AL VOLVER
   Future<bool> cancelarPedido() async {
     final result = await showDialog(
       context: context,
@@ -167,7 +185,9 @@ class _CrearPedidoPageState extends State<CrearPedidoPage> {
     return result ?? false;
   }
 
-  //FRONT
+  int get valorTotal =>
+      productosSeleccionados.fold(0, (sum, item) => sum + item.precio);
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
