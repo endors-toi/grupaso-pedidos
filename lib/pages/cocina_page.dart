@@ -8,6 +8,27 @@ class CocinaPage extends StatefulWidget {
 }
 
 class CocinaPageState extends State<CocinaPage> {
+  Future<List<String>> getNombresProductos(List<dynamic> idsProductos) async {
+    List<String> nombresProductos = [];
+    for (var id in idsProductos) {
+      var querySnapshot = await FirebaseFirestore.instance
+          .collection('productos')
+          .where('id', isEqualTo: id)
+          .get();
+      if (querySnapshot.docs.isNotEmpty) {
+        nombresProductos.add(querySnapshot.docs.first['nombre']);
+      }
+    }
+    return nombresProductos;
+  }
+
+  Future<void> updateEstadoPedido(String pedidoId) async {
+    await FirebaseFirestore.instance
+        .collection('pedidos')
+        .doc(pedidoId)
+        .update({'estado': 'PREPARADO'});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,7 +40,7 @@ class CocinaPageState extends State<CocinaPage> {
         child: StreamBuilder(
           stream: FirebaseFirestore.instance
               .collection('pedidos')
-              // .where('estado', isEqualTo: 'PENDIENTE')
+              .where('estado', isEqualTo: 'PENDIENTE')
               .snapshots(),
           builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (!snapshot.hasData) {
@@ -35,21 +56,31 @@ class CocinaPageState extends State<CocinaPage> {
                       subtitle: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Productos: \n${parse(doc['productos'])}'),
+                          Text('Productos: '),
+                          FutureBuilder(
+                            future:
+                                getNombresProductos(parse(doc['productos'])),
+                            builder: (context,
+                                AsyncSnapshot<List<String>> snapshot) {
+                              if (!snapshot.hasData) {
+                                return Text('Cargando productos...');
+                              } else {
+                                return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: snapshot.data!
+                                      .map((nombre) => Text('  $nombre'))
+                                      .toList(),
+                                );
+                              }
+                            },
+                          ),
                           Text('Estado ${doc['estado']}')
                         ],
                       ),
                       trailing: ElevatedButton(
                         child: Text('Preparado'),
                         onPressed: () {
-                          int id = doc['id'];
-                          String docId = id.toString();
-                          documentUpdate(
-                              collection: 'pedidos',
-                              docId: docId,
-                              document: {
-                                'estado': 'PREPARADO',
-                              });
+                          updateEstadoPedido(doc.id);
                         },
                       ),
                     ),
