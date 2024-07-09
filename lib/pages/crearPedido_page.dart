@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-//  EL FRONT ESTA HASTA ABAJO - DEJE LO RELACIONADO A BACKEND AL PRINCIPIO 
+//  EL FRONT ESTA HASTA ABAJO - DEJE LO RELACIONADO A BACKEND AL PRINCIPIO
 //     -ahora aparecen iconos pero seran imagenes, uso iconos mientras para no estar agregando assets aun al programa
 //     -las listas y todo eso estan inventadas para testear, luego linkeo a base de datos
 //     -el kappan se la come
@@ -12,7 +12,11 @@ class Producto {
   final String descripcion;
   final int precio;
 
-  Producto({required this.id, required this.nombre, required this.descripcion, required this.precio});
+  Producto(
+      {required this.id,
+      required this.nombre,
+      required this.descripcion,
+      required this.precio});
 }
 
 // Modelo de Pedido
@@ -44,9 +48,21 @@ class CrearPedidoPage extends StatefulWidget {
 
 class _CrearPedidoPageState extends State<CrearPedidoPage> {
   List<Producto> productos = [
-    Producto(id: 1, nombre: 'Producto 1', descripcion: 'Descripción 1', precio: 1000),
-    Producto(id: 2, nombre: 'Producto 2', descripcion: 'Descripción 2', precio: 1500),
-    Producto(id: 3, nombre: 'Producto 3', descripcion: 'Descripción 3', precio: 2000),
+    Producto(
+        id: 1,
+        nombre: 'Producto 1',
+        descripcion: 'Descripción 1',
+        precio: 1000),
+    Producto(
+        id: 2,
+        nombre: 'Producto 2',
+        descripcion: 'Descripción 2',
+        precio: 1500),
+    Producto(
+        id: 3,
+        nombre: 'Producto 3',
+        descripcion: 'Descripción 3',
+        precio: 2000),
   ];
 
   List<Producto> productosSeleccionados = [];
@@ -62,10 +78,10 @@ class _CrearPedidoPageState extends State<CrearPedidoPage> {
     });
   }
 
-
   // Lógica para guardar el pedido en la base de datos o donde sea que deba ir
   void confirmarPedido() {
-    final valorTotal = productosSeleccionados.fold(0, (sum, item) => sum + item.precio);
+    final valorTotal =
+        productosSeleccionados.fold(0, (sum, item) => sum + item.precio);
 
     final nuevoPedido = Pedido(
       id: currentIdPedido++,
@@ -109,14 +125,15 @@ class _CrearPedidoPageState extends State<CrearPedidoPage> {
         ],
       ),
     );
-    
+
     if (result == true) {
       confirmarPedido();
     }
   }
 
   // Método para calcular el valor total - quiza no deba ser redundante, pero bueno, tarea del maxi del futuro
-  int get valorTotal => productosSeleccionados.fold(0, (sum, item) => sum + item.precio);
+  int get valorTotal =>
+      productosSeleccionados.fold(0, (sum, item) => sum + item.precio);
 
   //CANCELAR PEDIDO AL VOLVER
   Future<bool> cancelarPedido() async {
@@ -150,8 +167,6 @@ class _CrearPedidoPageState extends State<CrearPedidoPage> {
     return result ?? false;
   }
 
-
-
   //FRONT
   @override
   Widget build(BuildContext context) {
@@ -163,7 +178,6 @@ class _CrearPedidoPageState extends State<CrearPedidoPage> {
         ),
         body: Column(
           children: [
-
             //lista productos
             Expanded(
               child: ListView.builder(
@@ -177,13 +191,14 @@ class _CrearPedidoPageState extends State<CrearPedidoPage> {
                     title: Text(producto.nombre),
                     subtitle: Text(producto.descripcion),
                     trailing: Text('${producto.precio} \$'),
-                    tileColor: isSelected ? const Color.fromARGB(255, 102, 255, 0) : null,
+                    tileColor: isSelected
+                        ? const Color.fromARGB(255, 102, 255, 0)
+                        : null,
                     onTap: () => toggleProductoSeleccionado(producto),
                   );
                 },
               ),
             ),
-
 
             //container con productos seleccionados
             if (productosSeleccionados.isNotEmpty)
@@ -199,7 +214,8 @@ class _CrearPedidoPageState extends State<CrearPedidoPage> {
                       'Productos Seleccionados:',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    ...productosSeleccionados.map((producto) => Text('${producto.nombre} - \$${producto.precio} ')),
+                    ...productosSeleccionados.map((producto) =>
+                        Text('${producto.nombre} - \$${producto.precio} ')),
                     SizedBox(height: 8.0),
                     Text(
                       'Valor Total: \$$valorTotal ',
@@ -213,7 +229,9 @@ class _CrearPedidoPageState extends State<CrearPedidoPage> {
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: ElevatedButton(
-                onPressed: productosSeleccionados.isEmpty ? null : mensajeConfirmarPedido,
+                onPressed: productosSeleccionados.isEmpty
+                    ? null
+                    : mensajeConfirmarPedido,
                 child: Text('Confirmar Pedido'),
               ),
             ),
@@ -223,4 +241,3 @@ class _CrearPedidoPageState extends State<CrearPedidoPage> {
     );
   }
 }
-

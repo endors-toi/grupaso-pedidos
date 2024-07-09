@@ -35,7 +35,7 @@ class _LoginPageState extends State<LoginPage> {
           }
         );
       } else if (user.text != "admin@grupasocorp.cl" || pass.text != "admin123"){
-        mensajeError = 'Datos invalidos';
+        mensajeError = 'Usuario o contraseña incorrectos';
         showDialog(
           context: context, 
           builder: (BuildContext context){
