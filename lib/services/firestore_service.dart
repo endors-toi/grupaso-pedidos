@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:grupaso_pedidos/pages/crearPedido_page.dart';
 import 'package:grupaso_pedidos/utils.dart';
 
 class FirestoreService {
@@ -6,7 +7,12 @@ class FirestoreService {
 
   // usuarios
   // productos
+
   // pedidos
+  //*
+  Stream<QuerySnapshot> Pedido() {
+    return FirebaseFirestore.instance.collection('Pedido').snapshots();
+  }
 
   // chat
   chatStream() {

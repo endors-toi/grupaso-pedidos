@@ -5,9 +5,11 @@ import 'package:grupaso_pedidos/pages/crearPedido_page.dart';
 import 'package:grupaso_pedidos/pages/dev/example_page.dart';
 import 'package:grupaso_pedidos/pages/login.dart';
 import 'package:grupaso_pedidos/pages/caja_page.dart';
+import 'package:grupaso_pedidos/pages/verPedido.dart';
 
 // recuerda recargar ----->
 var pages = [
+  VerPedidoPage(),
   ExamplePage(),
   CrearPedidoPage(),
   LoginPage(),
