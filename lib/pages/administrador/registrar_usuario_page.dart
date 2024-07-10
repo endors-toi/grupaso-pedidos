@@ -149,6 +149,9 @@ class _RegistrarUsuarioPageState extends State<RegistrarUsuarioPage> {
                             user._rol = rol!;
 
                             Usuarios.add(user);
+
+                            easySuccess('Cuenta creada correctamente');
+                            Navigator.pop(context);
                           } else {
                             easyError(msgError);
                           }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:grupaso_pedidos/pages/placeholders/administrador/pedidos.dart';
+import 'package:grupaso_pedidos/pages/placeholders/administrador/productos.dart';
 import 'package:grupaso_pedidos/pages/placeholders/administrador/usuarios.dart';
 
 class AdministradorPage extends StatefulWidget {
@@ -80,7 +81,7 @@ class _AdministradorPageState extends State<AdministradorPage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => PlaceHolderPedidos()),
+                              builder: (context) => PlaceHolderProductos()),
                         );
                       },
                       child: Text("Productos",
