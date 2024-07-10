@@ -108,7 +108,7 @@ class _CajaPageState extends State<CajaPage> {
                     TableCell(
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Text('Editar',
+                        child: Text('Pagar',
                             style: TextStyle(fontWeight: FontWeight.bold)),
                       ),
                     ),
@@ -155,7 +155,7 @@ class _CajaPageState extends State<CajaPage> {
                                 borderRadius: BorderRadius.circular(8.0),
                               ),
                               child: IconButton(
-                                icon: Icon(Icons.refresh,
+                                icon: Icon(Icons.monetization_on_outlined,
                                     color: Colors.white), // Icono blanco
                                 onPressed: () {
                                   _cambiarEstado(pedido['id']!);
