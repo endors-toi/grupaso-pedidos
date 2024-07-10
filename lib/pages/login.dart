@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:grupaso_pedidos/pages/administrador/administrador_page.dart';
+import 'package:grupaso_pedidos/pages/caja_page.dart';
+import 'package:grupaso_pedidos/pages/cocina_page.dart';
+import 'package:grupaso_pedidos/pages/verPedido.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -8,75 +12,84 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   TextEditingController user = TextEditingController();
   TextEditingController pass = TextEditingController();
-  String mensajeError = "";
-  String usuarioValido = "admin@grupasocorp.cl";
-  String contrasenaValida = "admin123";
 
-  void validarDatos() {
-    setState(() {
-      if (user.text.isEmpty || pass.text.isEmpty) {
-        mensajeError = 'Uno o mas campos no pueden estar vacios';
-        showDialog(
-          context: context, 
-          builder: (BuildContext context){
-            return AlertDialog(
-              title: Text("Error al iniciar sesion"),
-              content: Text("$mensajeError"),
-              actions: <Widget>[
-                TextButton(
-                  child: Text('Aceptar'),
-                  onPressed: () {
-                    mensajeError = "";
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          }
-        );
-      } else if (user.text != "admin@grupasocorp.cl" || pass.text != "admin123"){
-        mensajeError = 'Usuario o contraseña incorrectos';
-        showDialog(
-          context: context, 
-          builder: (BuildContext context){
-            return AlertDialog(
-              title: Text("Error al iniciar sesion"),
-              content: Text("$mensajeError"),
-              actions: <Widget>[
-                TextButton(
-                  child: Text('Aceptar'),
-                  onPressed: () {
-                    mensajeError = "";
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          }
-        );
-      } 
+  void iniciarSesion() {
+    String mensajeError = '';
 
-      if (mensajeError == ""){
-        showDialog(
-          context: context, 
-          builder: (BuildContext context){
-            return AlertDialog(
-              title: Text("Sesion Iniciada"),
-              actions: <Widget>[
-                TextButton(
-                  child: Text('Aceptar'),
-                  onPressed: () {
-                    mensajeError = "";
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          }
+    if (user.text.isEmpty || pass.text.isEmpty) {
+      mensajeError = 'Uno o más campos no pueden estar vacíos';
+      mostrarDialogoError(mensajeError);
+    } else if (!validarCredenciales(user.text, pass.text)) {
+      mensajeError = 'Usuario o contraseña incorrectos';
+      mostrarDialogoError(mensajeError);
+    } else {
+      redirigirPagina(user.text);
+    }
+  }
+
+  bool validarCredenciales(String usuario, String contrasena) {
+    Map<String, String> usuariosValidos = {
+      "admin@grupaso.cl": "admin123",
+      "cocina@grupaso.cl": "cocina123",
+      "garzon@grupaso.cl": "garzon123",
+      "caja@grupaso.cl": "caja123"
+    };
+
+    if (usuariosValidos.containsKey(usuario) && usuariosValidos[usuario] == contrasena) {
+      return true;
+    }
+    return false;
+  }
+
+  void mostrarDialogoError(String mensajeError) {
+    showDialog(
+      context: context, 
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Error al iniciar sesión"),
+          content: Text(mensajeError),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Aceptar'),
+              onPressed: () {
+                mensajeError = "";
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
         );
       }
-    });
+    );
   }
+
+  void redirigirPagina(String usuario) {
+    Widget paginaDestino;
+
+    switch (usuario) {
+      case "admin@grupaso.cl":
+        paginaDestino = AdministradorPage();
+        break;
+      case "cocina@grupaso.cl":
+        paginaDestino = CocinaPage();
+        break;
+      case "garzon@grupaso.cl":
+        paginaDestino = VerPedidoPage();
+        break;
+      case "caja@grupaso.cl":
+        paginaDestino = CajaPage();
+        break;
+      default:
+        mostrarDialogoError("No se encontró una página para el usuario.");
+        return;
+    }
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => paginaDestino),
+    );
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -124,7 +137,7 @@ class _LoginPageState extends State<LoginPage> {
                 SizedBox(height: 20.0),
                 ElevatedButton( 
                   onPressed: (){
-                    validarDatos();
+                    iniciarSesion();
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFF7C03FF),
