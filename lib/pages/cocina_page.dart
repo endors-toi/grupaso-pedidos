@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:grupaso_pedidos/utils.dart';
 
 class CocinaPage extends StatefulWidget {
   @override
@@ -59,7 +58,7 @@ class CocinaPageState extends State<CocinaPage> {
                           Text('Productos: '),
                           FutureBuilder(
                             future:
-                                getNombresProductos(parse(doc['productos'])),
+                                getNombresProductos(doc['productos']),
                             builder: (context,
                                 AsyncSnapshot<List<String>> snapshot) {
                               if (!snapshot.hasData) {
