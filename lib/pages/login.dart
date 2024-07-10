@@ -12,7 +12,6 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   TextEditingController user = TextEditingController();
   TextEditingController pass = TextEditingController();
-  String mensajeError = "";
 
   void iniciarSesion() {
     String mensajeError = '';
