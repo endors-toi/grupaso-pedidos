@@ -119,7 +119,6 @@ class _CajaPageState extends State<CajaPage> {
       appBar: AppBar(
         title: Text('Pedidos Servidos'),
       ),
-      backgroundColor: Color(0xFF7C03FF),
       body: StreamBuilder<List<Pedido>>(
         stream: getPedidosServidos(),
         builder: (context, snapshot) {
@@ -136,16 +135,6 @@ class _CajaPageState extends State<CajaPage> {
           final pedidos = snapshot.data!;
           return SingleChildScrollView(
             child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Color.fromARGB(255, 68, 112, 233),
-                    Color(0xFF05F4FF),
-                  ],
-                ),
-              ),
               child: Center(
                 child: Container(
                   margin: EdgeInsets.all(16.0),
