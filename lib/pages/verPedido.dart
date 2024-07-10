@@ -71,7 +71,7 @@ class _VerPedidoPageState extends State<VerPedidoPage> {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
   Stream<List<Pedido>> getPedidosPreparados() {
-    return _db.collection('pedidos').where('estado', isEqualTo: 'PREPARADO').snapshots().asyncMap((snapshot) async {
+    return _db.collection('pedidos').snapshots().asyncMap((snapshot) async {      //.where('estado', isEqualTo: 'PREPARADO')
       List<Pedido> pedidos = [];
       for (var doc in snapshot.docs) {
         List<int> productoIds;
@@ -137,7 +137,7 @@ class _VerPedidoPageState extends State<VerPedidoPage> {
             return Center(child: Text('Error: ${snapshot.error}'));
           }
           if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text('No hay pedidos pendientes.'));
+            return Center(child: Text('No hay pedidos que mostrar.'));
           }
 
           final pedidos = snapshot.data!;
@@ -152,7 +152,7 @@ class _VerPedidoPageState extends State<VerPedidoPage> {
                       final pedido = pedidos[index];
                       return Column(
                         children: [
-                          ListTile(
+                          pedido.estado == "PENDIENTE" || pedido.estado == "PREPARADO" ? ListTile(
                             title: Text('Pedido ${pedido.id2} - ${pedido.mesa}'),
                             subtitle: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -164,6 +164,7 @@ class _VerPedidoPageState extends State<VerPedidoPage> {
                                 Text('Productos:'),
                                 ...pedido.productos.map((producto) => Text('${producto.nombre} - ${producto.precio} \$')).toList(),
                                 SizedBox(height: 8),
+                                pedido.estado == "PREPARADO" ?
                                 ElevatedButton(
                                   onPressed: () async {
                                     bool? confirm = await showDialog(
@@ -194,7 +195,9 @@ class _VerPedidoPageState extends State<VerPedidoPage> {
                                     }
                                   },
                                   child: Text('Marcar como servido'),
-                                ),
+                                ) : 
+                                SizedBox(),
+                                Divider(),
                               ],
                             ),
                             leading: Icon(
@@ -202,8 +205,8 @@ class _VerPedidoPageState extends State<VerPedidoPage> {
                               size: 35,
                               color: Color.fromARGB(255, 243, 174, 24),
                             ),
-                          ),
-                          Divider(),
+                          ) : 
+                          SizedBox(),
                         ],
                       );
                     },
