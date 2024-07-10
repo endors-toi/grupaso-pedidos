@@ -16,6 +16,8 @@ class _RegistrarUsuarioPageState extends State<RegistrarUsuarioPage> {
   String msgError = '';
   bool error = false;
   List<Usuario> Usuarios = [];
+  final emailCheck = RegExp(r"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$");
+  final contraCheck = RegExp(r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{9,}$");
 
   @override
   Widget build(BuildContext context) {
@@ -128,17 +130,21 @@ class _RegistrarUsuarioPageState extends State<RegistrarUsuarioPage> {
                             error = true;
                           }
 
-                          if (contrasena.text.length < 9) {
-                            msgError =
-                                msgError + " Longitud de contraseña invalido ";
-                            error = true;
-                          }
-
                           for (Usuario userantiwo in Usuarios) {
                             if (userantiwo._correo == correo.text) {
                               msgError = msgError + " Cuenta ya creada ";
                               error = true;
                             }
+                          }
+
+                          if (!contraCheck.hasMatch(contrasena.text)) {
+                            msgError = msgError + " Contraseña invalida ";
+                            error = true;
+                          }
+
+                          if (!emailCheck.hasMatch(correo.text)) {
+                            msgError = msgError + " Correo invalido ";
+                            error = true;
                           }
 
                           if (error == false) {
