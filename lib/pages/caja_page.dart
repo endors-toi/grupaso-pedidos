@@ -69,7 +69,11 @@ class _CajaPageState extends State<CajaPage> {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
   Stream<List<Pedido>> getPedidosServidos() {
-    return _db.collection('pedidos').where('estado', isEqualTo: 'SERVIDO').snapshots().asyncMap((snapshot) async {
+    return _db
+        .collection('pedidos')
+        .where('estado', isEqualTo: 'SERVIDO')
+        .snapshots()
+        .asyncMap((snapshot) async {
       List<Pedido> pedidos = [];
       for (var doc in snapshot.docs) {
         List<int> productoIds;
@@ -81,7 +85,10 @@ class _CajaPageState extends State<CajaPage> {
         }
         List<Producto> productos = [];
         for (int productoId in productoIds) {
-          QuerySnapshot productoSnapshot = await _db.collection('productos').where('id', isEqualTo: productoId).get();
+          QuerySnapshot productoSnapshot = await _db
+              .collection('productos')
+              .where('id', isEqualTo: productoId)
+              .get();
           if (productoSnapshot.docs.isNotEmpty) {
             productos.add(Producto.fromFirestore(productoSnapshot.docs.first));
           }
@@ -171,31 +178,41 @@ class _CajaPageState extends State<CajaPage> {
                           TableCell(
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text('Estado', style: TextStyle(fontWeight: FontWeight.bold)),
+                              child: Text('Estado',
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold)),
                             ),
                           ),
                           TableCell(
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text('ID', style: TextStyle(fontWeight: FontWeight.bold)),
+                              child: Text('ID',
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold)),
                             ),
                           ),
                           TableCell(
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text('Productos', style: TextStyle(fontWeight: FontWeight.bold)),
+                              child: Text('Productos',
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold)),
                             ),
                           ),
                           TableCell(
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text('Total', style: TextStyle(fontWeight: FontWeight.bold)),
+                              child: Text('Total',
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold)),
                             ),
                           ),
                           TableCell(
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text('Editar', style: TextStyle(fontWeight: FontWeight.bold)),
+                              child: Text('Pagar',
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold)),
                             ),
                           ),
                         ],
@@ -220,7 +237,10 @@ class _CajaPageState extends State<CajaPage> {
                                 padding: const EdgeInsets.all(8.0),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: pedido.productos.map((producto) => Text('${producto.nombre} - ${producto.precio} \$')).toList(),
+                                  children: pedido.productos
+                                      .map((producto) => Text(
+                                          '${producto.nombre} - ${producto.precio} \$'))
+                                      .toList(),
                                 ),
                               ),
                             ),
@@ -240,24 +260,28 @@ class _CajaPageState extends State<CajaPage> {
                                       borderRadius: BorderRadius.circular(8.0),
                                     ),
                                     child: IconButton(
-                                      icon: Icon(Icons.refresh, color: Colors.white),
+                                      icon: Icon(Icons.monetization_on_rounded,
+                                          color: Colors.white),
                                       onPressed: () async {
                                         bool? confirm = await showDialog(
                                           context: context,
                                           builder: (BuildContext context) {
                                             return AlertDialog(
                                               title: Text('Confirmar'),
-                                              content: Text('¿Desea marcar este pedido como pagado?'),
+                                              content: Text(
+                                                  '¿Desea marcar este pedido como pagado?'),
                                               actions: <Widget>[
                                                 TextButton(
                                                   onPressed: () {
-                                                    Navigator.of(context).pop(false);
+                                                    Navigator.of(context)
+                                                        .pop(false);
                                                   },
                                                   child: Text('Cancelar'),
                                                 ),
                                                 TextButton(
                                                   onPressed: () {
-                                                    Navigator.of(context).pop(true);
+                                                    Navigator.of(context)
+                                                        .pop(true);
                                                   },
                                                   child: Text('Aceptar'),
                                                 ),
@@ -266,8 +290,10 @@ class _CajaPageState extends State<CajaPage> {
                                           },
                                         );
                                         if (confirm == true) {
-                                          await actualizarEstadoPedido(pedido.id);
-                                          easySuccess('Pedido ${pedido.id2} actualizado a PAGADO.');
+                                          await actualizarEstadoPedido(
+                                              pedido.id);
+                                          easySuccess(
+                                              'Pedido ${pedido.id2} actualizado a PAGADO.');
                                         }
                                       },
                                     ),
