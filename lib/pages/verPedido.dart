@@ -104,6 +104,29 @@ class _VerPedidoPageState extends State<VerPedidoPage> {
       appBar: AppBar(
         title: Text('Pedidos en curso.'),
       ),
+      floatingActionButton: Padding(
+                padding: EdgeInsets.only(top: 30, bottom: 60),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xFF7C03FF),
+                    padding: EdgeInsets.symmetric(horizontal: 40.0, vertical: 15.0),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => CrearPedidoPage()),
+                    );
+                  },
+                  child: Text("Crear pedido",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                      )),
+                ),
+              ),
       body: StreamBuilder<List<Pedido>>(
         stream: getPedidosPreparados(),
         builder: (context, snapshot) {
@@ -187,29 +210,7 @@ class _VerPedidoPageState extends State<VerPedidoPage> {
                   ),
                 ),
               ),
-              Padding(
-                padding: EdgeInsets.only(top: 30, bottom: 60),
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF7C03FF),
-                    padding: EdgeInsets.symmetric(horizontal: 40.0, vertical: 15.0),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                  ),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => CrearPedidoPage()),
-                    );
-                  },
-                  child: Text("Crear pedido",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                      )),
-                ),
-              ),
+              
             ],
           );
         },
